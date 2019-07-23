@@ -62,7 +62,7 @@ class Child2 extends React.Component {
   render() {
     return (
       <p>
-        childContext: {this.context.value} {this.context.a}
+        childContext: {this.context.value}
       </p>
     )
   }
