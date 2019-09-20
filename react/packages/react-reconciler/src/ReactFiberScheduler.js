@@ -1682,7 +1682,7 @@ function scheduleWorkToRoot(fiber: Fiber, expirationTime): FiberRoot | null {
     }
     return null;
   }
-
+  //  跟踪应用更新代码
   if (enableSchedulerTracing) {
     const interactions = __interactionsRef.current;
     if (interactions.size > 0) {

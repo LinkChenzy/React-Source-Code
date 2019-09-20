@@ -336,6 +336,7 @@ function ReactRoot(
   isConcurrent: boolean,
   hydrate: boolean,
 ) {
+  // 创建了一个FiberRoot
   const root = DOMRenderer.createContainer(container, isConcurrent, hydrate);
   this._internalRoot = root;
 }
@@ -352,7 +353,7 @@ ReactRoot.prototype.render = function(
   if (callback !== null) {
     work.then(callback);
   }
-  DOMRenderer.updateContainer(children, root, null, work._onCommit);
+  DOMRenderer.updateContainer(children, root, null, work._onCommit); // 得到一个expirationTime
   return work;
 };
 ReactRoot.prototype.unmount = function(callback: ?() => mixed): Work {
@@ -445,7 +446,7 @@ function getReactRootElementInContainer(container: any) {
 }
 
 function shouldHydrateDueToLegacyHeuristic(container) {
-  const rootElement = getReactRootElementInContainer(container);
+  const rootElement = getReactRootElementInContainer(container); //判断是否存在子节点
   return !!(
     rootElement &&
     rootElement.nodeType === ELEMENT_NODE &&
@@ -468,9 +469,10 @@ function legacyCreateRootFromDOMContainer(
   const shouldHydrate =
     forceHydrate || shouldHydrateDueToLegacyHeuristic(container);
   // First clear any existing content.
-  if (!shouldHydrate) {
+  if (!shouldHydrate) {  // render shouldHydrate=false 
     let warned = false;
     let rootSibling;
+    //循环删除 container下面所有的子节点
     while ((rootSibling = container.lastChild)) {
       if (__DEV__) {
         if (
@@ -503,11 +505,12 @@ function legacyCreateRootFromDOMContainer(
   }
   // Legacy roots are not async by default.
   const isConcurrent = false;
+  // 返回一个ReactRoot
   return new ReactRoot(container, isConcurrent, shouldHydrate);
 }
 
 function legacyRenderSubtreeIntoContainer(
-  parentComponent: ?React$Component<any, any>,
+  parentComponent: ?React$Component<any, any>, //null
   children: ReactNodeList,
   container: DOMContainer,
   forceHydrate: boolean,
@@ -540,8 +543,8 @@ function legacyRenderSubtreeIntoContainer(
       };
     }
     // Initial mount should not be batched.
-    DOMRenderer.unbatchedUpdates(() => {
-      if (parentComponent != null) {
+    DOMRenderer.unbatchedUpdates(() => { // 批量操作
+      if (parentComponent != null) { 
         root.legacy_renderSubtreeIntoContainer(
           parentComponent,
           children,
@@ -623,7 +626,7 @@ const ReactDOM: Object = {
     }
     return DOMRenderer.findHostInstance(componentOrElement);
   },
-
+  // 服务端渲染时候使用的更新 可以复用节点
   hydrate(element: React$Node, container: DOMContainer, callback: ?Function) {
     // TODO: throw or warn if we couldn't hydrate?
     return legacyRenderSubtreeIntoContainer(
@@ -635,9 +638,10 @@ const ReactDOM: Object = {
     );
   },
 
+  // ReactDOM.render(<App />, document.getElementById('root'))
   render(
     element: React$Element<any>,
-    container: DOMContainer,
+    container: DOMContainer, 
     callback: ?Function,
   ) {
     return legacyRenderSubtreeIntoContainer(

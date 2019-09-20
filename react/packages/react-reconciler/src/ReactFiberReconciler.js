@@ -130,7 +130,7 @@ function scheduleRootUpdate(
     }
   }
 
-  const update = createUpdate(expirationTime);
+  const update = createUpdate(expirationTime); // 创建Update
   // Caution: React DevTools currently depends on this property
   // being called "element".
   update.payload = {element};
@@ -145,10 +145,10 @@ function scheduleRootUpdate(
     );
     update.callback = callback;
   }
-  enqueueUpdate(current, update);
+  enqueueUpdate(current, update); // 加入更新队列
 
-  scheduleWork(current, expirationTime);
-  return expirationTime;
+  scheduleWork(current, expirationTime); // 调度任务 根据任务的优先级进行更新顺序
+  return expirationTime; // 返回时间
 }
 
 export function updateContainerAtExpirationTime(
@@ -272,15 +272,15 @@ export function createContainer(
   return createFiberRoot(containerInfo, isConcurrent, hydrate);
 }
 
-export function updateContainer(
+export function updateContainer( // 得到一个expirationTime
   element: ReactNodeList,
   container: OpaqueRoot,
-  parentComponent: ?React$Component<any, any>,
+  parentComponent: ?React$Component<any, any>, // ReactDOM.render null
   callback: ?Function,
 ): ExpirationTime {
   const current = container.current;
   const currentTime = requestCurrentTime();
-  const expirationTime = computeExpirationForFiber(currentTime, current);
+  const expirationTime = computeExpirationForFiber(currentTime, current); //计算时间
   return updateContainerAtExpirationTime(
     element,
     container,
